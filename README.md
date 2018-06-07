@@ -5,7 +5,7 @@ For Corona SDK.
 
 TVShader is available in the Corona Marketplace:  https://marketplace.coronalabs.com/graphics/tvshader
 
-(You need a copy of TVShader to use this the demo as written.  The touch support module
+(You need a copy of TVShader to use the demo as written.  The touch support module
 itself doesn't require TVShader, but is perhaps of little use if you're not trying to
 solve a paricular problem __caused__ by using TVShader or something similar
 for full-screen effects.)
