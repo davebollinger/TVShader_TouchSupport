@@ -12,7 +12,10 @@ rendering and can no longer receive touch events on the individual child element
 
 This "solution" still has plenty of room for improvement.  For example, higher-level
 group visibility should be "passed down" to grand-children and great-grand-children,
-etc, et al.
+along with treating alpha=0 as isVisible=false, etc, et al.
+
+So consider this a place to start, rather than a final destination - only you can
+know if you'll need to handle more of the "tricky" cases.
 
 The routine is recursive, so theoretically processes a deeply nested
 structure, but in practice it's really only tested to a single depth.  But it does
