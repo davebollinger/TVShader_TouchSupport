@@ -23,10 +23,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --]]
 
+--[[
+Release notes:
+v 0.0.1 20180606
+  initial release
+v 0.0.2 20180608
+  no external api changes
+  added arbitrary anchors to demo content
+  wrapped dispatchEvent() with a nil check
+  added tap event support
+  modified demo content to demo tap events
+  flipped params to internal recursive support functions
+--]]
+
 local TouchSupport = {
 	_NAME = "TouchSupport",
 	_DESCRIPTION = "Support for manually dispatching touch events to children of a specified Display Group",
-	_VERSION = "0.0.1",
+	_VERSION = "0.0.2",
 	_COPYRIGHT = "Copyright (c) 2018 David Bollinger",
 	_LICENSE = "MIT License"
 }
@@ -83,12 +96,21 @@ function TouchSupport:init(params)
 		return true
 	end
 	rect:addEventListener("touch")
+	rect.tap = function(self, event)
+		-- much simpler than touch, no need to consider focus
+		self.touchSupport:redispatchEvent(event)
+	end
+	rect:addEventListener("tap")
 end
 
 
 function TouchSupport:destroy()
-	if (self.touchRect) then self.touchRect:removeEventListener("touch") end
+	if (self.touchRect) then
+		self.touchRect:removeEventListener("touch")
+		self.touchRect:removeEventListener("tap")
+	end
 	self.touchRect.touch = nil
+	self.touchRect.tap = nil
 	display.remove(self.touchRect)
 	self.touchRect = nil
 	self.touchGroup = nil
@@ -118,7 +140,7 @@ local function _objectBoundsContainPoint(object, x, y)
 end -- objectBoundsContainPoint()
 
 
-local function _processObject(event, object)
+local function _processObject(object, event)
 	if (not object) then return end
 	if ((object.isVisible or object.isHitTestable)) then
 		if (_objectBoundsContainPoint(object, event.x, event.y)) then
@@ -134,14 +156,14 @@ local function _processObject(event, object)
 end -- _processObject()
 
 
-local function _recurseGroup(event, group)
+local function _recurseGroup(group, event)
 	for i = group.numChildren, 1, -1 do
 		local child = group[i]
 		if (child) then
 			if (child.numChildren) then
-				_recurseGroup(event, child)
+				_recurseGroup(child, event)
 			else
-				_processObject(event, child)
+				_processObject(child, event)
 			end -- if child is group
 		end -- if child
 		if (event.handled) then return end
@@ -152,7 +174,7 @@ end -- _recurseGroup()
 function TouchSupport:redispatchEvent(event)
 	event.handled = false
 	if (not self.contentGroup) then return end
-	_recurseGroup(event, self.contentGroup)
+	_recurseGroup(self.contentGroup, event)
 end
 
 

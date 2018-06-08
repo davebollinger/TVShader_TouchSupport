@@ -30,10 +30,16 @@ function DemoContent:create(group, debugText)
 	-- make some touchable rects
 	local function onRectTouch(self, event)
 		if (event.phase=="began") then
-			debugText.text = "YOU TOUCHED: " .. tostring(self.id)
+			debugText.text = "TOUCHED ID: " .. tostring(self.id)
 			debugText.alpha = 1
 			transition.to(debugText, { time=1000, alpha=0.2 })
 		end
+		return true
+	end
+	local function onRectTap(self, event)
+		debugText.text = "TAPPED ID: " .. tostring(self.id)
+		debugText.alpha = 1
+		transition.to(debugText, { time=1000, alpha=0.2 })
 		return true
 	end
 
@@ -53,8 +59,13 @@ function DemoContent:create(group, debugText)
 		-- arbitrary anchors are also supported (not present in original demo)
 		rect.anchorX = math.random()
 		rect.anchorY = math.random()
-		rect.touch = onRectTouch
-		rect:addEventListener("touch")
+		if (i%2==0) then
+			rect.touch = onRectTouch
+			rect:addEventListener("touch")
+		else
+			rect.tap = onRectTap
+			rect:addEventListener("tap")
+		end
 		objectList[#objectList+1] = rect
 		--
 		local text = display.newText({ parent=group, x=x, y=y, text="#"..tostring(i), fontSize=16, font=native.systemFontBold })
