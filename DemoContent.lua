@@ -32,7 +32,7 @@ function DemoContent:create(group, debugText)
 		if (event.phase=="began") then
 			debugText.text = "YOU TOUCHED: " .. tostring(self.id)
 			debugText.alpha = 1
-			transition.to(debugText, { time=1000, alpha=0 })
+			transition.to(debugText, { time=1000, alpha=0.2 })
 		end
 		return true
 	end
@@ -50,11 +50,18 @@ function DemoContent:create(group, debugText)
 		rect.id = i
 		rect.alpha = 0.5
 		rect.rotation = r
+		-- arbitrary anchors are also supported (not present in original demo)
+		rect.anchorX = math.random()
+		rect.anchorY = math.random()
 		rect.touch = onRectTouch
 		rect:addEventListener("touch")
 		objectList[#objectList+1] = rect
 		--
 		local text = display.newText({ parent=group, x=x, y=y, text="#"..tostring(i), fontSize=16, font=native.systemFontBold })
+		-- keep text centered in rect despite arbitrary anchors: (not present in original demo)
+		local cx, cy = rect:localToContent(0,0)
+		text.x, text.y = group:contentToLocal(cx,cy)
+		--
 		text:setFillColor(0)
 		text.rotation = r
 		objectList[#objectList+1] = text

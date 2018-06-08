@@ -1,18 +1,20 @@
 display.setStatusBar( display.HiddenStatusBar )
 
--- standard tvshader stuff
-local TVShader = require("TVShader")
+
+-- standard tvshader setup stuff
+local TVShader = require("_TVShaderFake")
 local contentGroup = display.newGroup()
 local effectGroup = display.newGroup()
 local tvshader = TVShader({ contentGroup=contentGroup, effectGroup=effectGroup })
 
 
--- debug content
+-- debug stuff
 -- keep this stuff out of, and above, contentGroup/effectGroup
 local debugGroup = display.newGroup()
 local debugText = display.newText({ parent=debugGroup, text="YOU TOUCHED:", x=10, y=10, font=native.systemFontBold, fontSize=10 })
 debugText.anchorX = 0
 debugText:setFillColor(1,1,0)
+debugText.alpha = 0.2
 
 -- demo content
 local DemoContent = require("DemoContent")
@@ -23,7 +25,7 @@ DemoContent:create(contentGroup, debugText)
 
 
 -- TEST #1
--- COMMON OUT TEST #2 BELOW
+-- COMMENT OUT TEST #2 BELOW
 -- VERIFY THAT EVERYTHING IS UNTOUCHABLE (see console output)
 -- (or skip this step if you already "know" that it'll be untouchable)
 
@@ -38,7 +40,6 @@ DemoContent:create(contentGroup, debugText)
 --
 
 local touchGroup = display.newGroup() -- on top of everything
-local TouchSupport = require("TouchSupport")
-local touchSupport = TouchSupport({ touchGroup=touchGroup, contentGroup=contentGroup })
-
+local TouchSupport = require("TouchSupport") -- the class
+local touchSupport = TouchSupport({ touchGroup=touchGroup, contentGroup=contentGroup }) -- an instance
 

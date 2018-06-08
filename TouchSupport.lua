@@ -122,10 +122,12 @@ local function _processObject(event, object)
 	if (not object) then return end
 	if ((object.isVisible or object.isHitTestable)) then
 		if (_objectBoundsContainPoint(object, event.x, event.y)) then
-			event.target = object
-			local handled = object:dispatchEvent(event)
-			if (handled==true) then
-				event.handled = true
+			if (object.dispatchEvent) then
+				event.target = object
+				local handled = object:dispatchEvent(event)
+				if (handled==true) then
+					event.handled = true
+				end
 			end
 		end -- if within bounds
 	end -- if a potential touch candidate
